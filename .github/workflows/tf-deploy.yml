@@ -5,21 +5,15 @@ on:
     branches:
       - master
 
-defaults:
-  run:
-    working-directory: ${{ env.tf_actions_working_dir }}
-
 jobs: 
   terraform:
     runs-on: ubuntu-latest
     name: Terraform
     environment: dev 
     steps:
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.1.9
-        terraform_wrapper: false
+    - uses: actions/checkout@v3
+    - uses: hashicorp/setup-terraform@v2
+      working-directory: tf
     
     - name: Terraform Init
       id: init
@@ -27,8 +21,6 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      working-directory: tf
-      shell: bash
 
     - name: Terraform Plan
       id: plan
@@ -37,13 +29,9 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      working-directory: tf
-      shell: bash
 
     - name: Terraform Apply
       run: terraform apply -input=false tf.plan
       env:
         AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      working-directory: tf
-      shell: bash
