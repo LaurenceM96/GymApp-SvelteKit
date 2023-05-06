@@ -13,6 +13,18 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: hashicorp/setup-terraform@v2
+
+    - name: Find and Replace
+      uses: jacobtomlinson/gha-find-replace@v3
+      with:
+        find: "your-base64-password"
+        replace: ${{ secrets.BASE64_BASIC_PASSWORD }}
+        regex: false
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      run: npm ci
+      run: npm run build
     
     - name: Terraform Init
       id: init
