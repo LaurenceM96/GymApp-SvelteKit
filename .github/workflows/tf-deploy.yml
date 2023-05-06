@@ -21,9 +21,16 @@ jobs:
         replace: ${{ secrets.BASE64_BASIC_PASSWORD }}
         regex: false
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Setup Node 18.x
       uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: npm
+
+    - name: Install dependencies
       run: npm ci
+
+    - name: Rebuild the dist/ directory
       run: npm run build
     
     - name: Terraform Init
